@@ -5,15 +5,15 @@
         <group>
             <file>file:/C:/Users/nvtan/Documents/NetBeansProjects/J2.L.P005/src/daos/MotocycleDAO.java</file>
             <file>file:/C:/Users/nvtan/Documents/NetBeansProjects/J2.L.P005/src/dtos/Brand.java</file>
-            <file>file:/C:/Users/nvtan/Documents/NetBeansProjects/J2.L.P005/src/daos/Test.java</file>
             <file>file:/C:/Users/nvtan/Documents/NetBeansProjects/J2.L.P005/src/guis/MotoTable.java</file>
             <file>file:/C:/Users/nvtan/Documents/NetBeansProjects/J2.L.P005/src/daos/BrandDAO.java</file>
             <file>file:/C:/Users/nvtan/Documents/NetBeansProjects/J2.L.P005/src/daos/UserDAO.java</file>
-            <file>file:/C:/Users/nvtan/Documents/NetBeansProjects/J2.L.P005/src/guis/Management.java</file>
             <file>file:/C:/Users/nvtan/Documents/NetBeansProjects/J2.L.P005/src/guis/Login.java</file>
             <file>file:/C:/Users/nvtan/Documents/NetBeansProjects/J2.L.P005/src/dtos/Motocycle.java</file>
+            <file>file:/C:/Users/nvtan/Documents/NetBeansProjects/J2.L.P005/src/dtos/User.java</file>
             <file>file:/C:/Users/nvtan/Documents/NetBeansProjects/J2.L.P005/src/utils/DBUils.java</file>
             <file>file:/C:/Users/nvtan/Documents/NetBeansProjects/J2.L.P005/src/guis/BrandTable.java</file>
+            <file>file:/C:/Users/nvtan/Documents/NetBeansProjects/J2.L.P005/src/guis/Management_Motocycle.java</file>
         </group>
     </open-files>
 </project-private>

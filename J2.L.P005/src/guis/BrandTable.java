@@ -8,7 +8,7 @@ package guis;
 import daos.BrandDAO;
 import dtos.Brand;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Vector;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -16,18 +16,18 @@ import javax.swing.table.AbstractTableModel;
  * @author TanNV
  */
 public class BrandTable extends AbstractTableModel{
-    private ArrayList<Brand> data = null;
+    private Vector<Brand> data = null;
     private String[] headeres = {"Brand ID", "Brand name", "Country", "Description"};
 
     public BrandTable() throws SQLException {
         loadData();
     }
     
-    public ArrayList<Brand> getData() {
+    public Vector<Brand> getData() {
         return data;
     }
 
-    public void setData(ArrayList<Brand> data) {
+    public void setData(Vector<Brand> data) {
         this.data = data;
     }
 
@@ -57,7 +57,7 @@ public class BrandTable extends AbstractTableModel{
             case 0 : return brand.getBrandID();
             case 1 : return brand.getBrandName();
             case 2 : return brand.getCountry();
-            case 4 : return brand.getDescription();
+            case 3 : return brand.getDescription();
         }
         return null;
     }

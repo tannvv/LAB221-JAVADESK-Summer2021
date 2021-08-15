@@ -5,17 +5,36 @@
  */
 package guis;
 
+import daos.MotocycleDAO;
+import dtos.Brand;
+import dtos.Motocycle;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author TanNV
  */
-public class Management extends javax.swing.JFrame {
+public class Management_Motocycle extends javax.swing.JFrame {
+
+    BrandTable brandModel = null;
+    MotoTable motoModel = null;
+    boolean brandAddNew = true;
+    boolean motoAddNew = true;
 
     /**
      * Creates new form Management
      */
-    public Management() {
+    public Management_Motocycle() throws SQLException {
         initComponents();
+        setLocationRelativeTo(null);
+        brandModel = new BrandTable();
+        motoModel = new MotoTable();
+        setModel();
     }
 
     /**
@@ -47,7 +66,7 @@ public class Management extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblMoto = new javax.swing.JTable();
         jPanel4 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -71,10 +90,11 @@ public class Management extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Motocycle Management");
+        setResizable(false);
 
         jTabbedPane1.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
 
-        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Main part :", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 13), new java.awt.Color(51, 0, 204))); // NOI18N
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 0, 204)), "Main part :", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 13), new java.awt.Color(51, 0, 204))); // NOI18N
 
         tblBrand.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -84,6 +104,11 @@ public class Management extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblBrand.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblBrandMouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(tblBrand);
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -100,10 +125,10 @@ public class Management extends javax.swing.JFrame {
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
 
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Detail part :", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 13), new java.awt.Color(51, 0, 204))); // NOI18N
+        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 0, 204)), "Detail part :", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 13), new java.awt.Color(51, 0, 204))); // NOI18N
         jPanel6.setForeground(new java.awt.Color(51, 0, 204));
 
         jLabel9.setText("Brand ID :");
@@ -115,6 +140,11 @@ public class Management extends javax.swing.JFrame {
         jLabel12.setText("Description : ");
 
         btnBrandAddNew.setText("Add new");
+        btnBrandAddNew.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBrandAddNewActionPerformed(evt);
+            }
+        });
 
         btnBrandSave.setText("Save");
         btnBrandSave.addActionListener(new java.awt.event.ActionListener() {
@@ -124,6 +154,11 @@ public class Management extends javax.swing.JFrame {
         });
 
         btnBrandDelete.setText("Delete");
+        btnBrandDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBrandDeleteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
@@ -135,7 +170,7 @@ public class Management extends javax.swing.JFrame {
                     .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGap(25, 25, 25)
                         .addComponent(btnBrandAddNew)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 49, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
                         .addComponent(btnBrandSave, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(21, 21, 21))
                     .addGroup(jPanel6Layout.createSequentialGroup()
@@ -200,21 +235,20 @@ public class Management extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Brand", jPanel1);
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Main part :", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 13), new java.awt.Color(51, 0, 204))); // NOI18N
-        jPanel3.setForeground(new java.awt.Color(51, 0, 204));
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(51, 0, 204)), "Main part :", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 13), new java.awt.Color(51, 0, 204))); // NOI18N
+        jPanel3.setForeground(new java.awt.Color(255, 255, 255));
 
         jScrollPane1.setForeground(new java.awt.Color(0, 0, 153));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblMoto.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -222,7 +256,12 @@ public class Management extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4", "Title 5", "Title 6", "Title 7", "Title 8"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        tblMoto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblMotoMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblMoto);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -238,10 +277,10 @@ public class Management extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
 
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Detail part : ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 13), new java.awt.Color(0, 51, 204))); // NOI18N
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 204)), "Detail part : ", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 13), new java.awt.Color(0, 51, 204))); // NOI18N
 
         jLabel1.setText("Motocycle ID : ");
 
@@ -260,10 +299,25 @@ public class Management extends javax.swing.JFrame {
         jLabel8.setText("Brand name :");
 
         btnMotoAddNew.setText("Add New");
+        btnMotoAddNew.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMotoAddNewActionPerformed(evt);
+            }
+        });
 
         btnMotoSave.setText("Save");
+        btnMotoSave.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMotoSaveActionPerformed(evt);
+            }
+        });
 
         btnMotoDelete.setText("Delete");
+        btnMotoDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnMotoDeleteActionPerformed(evt);
+            }
+        });
 
         boxBrand.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -361,10 +415,10 @@ public class Management extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(35, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Motocycle", jPanel2);
@@ -377,7 +431,9 @@ public class Management extends javax.swing.JFrame {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 575, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
@@ -385,7 +441,134 @@ public class Management extends javax.swing.JFrame {
 
     private void btnBrandSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBrandSaveActionPerformed
         // TODO add your handling code here:
+        if (!validBrand()) { //check validation of brand input
+            return;
+        }
+        try {
+            String brandID = txtBrandID.getText().trim();
+            String brandName = txtBrandName.getText().trim();
+            String country = txtBrandCountry.getText().trim();
+            String desc = txtBrandDesc.getText().trim();
+            Brand brand = new Brand(brandID, brandName, country, desc);
+            if (brandAddNew == true) { // case for insert new brand
+                brandModel.createBrand(brand);
+            }else{
+                brandModel.updateBrand(brand);
+            }
+            tblBrand.updateUI();
+            setBrandDefault();    // reset all of field
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error");
+        }
+
     }//GEN-LAST:event_btnBrandSaveActionPerformed
+
+    private void tblBrandMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBrandMouseClicked
+        // TODO add your handling code here:
+        int indexSelected = tblBrand.getSelectedRow();
+        if (indexSelected == -1) {
+            return;
+        }
+        Brand brand = brandModel.getData().get(indexSelected);
+        showBrand(brand);
+    }//GEN-LAST:event_tblBrandMouseClicked
+
+    private void tblMotoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblMotoMouseClicked
+        // TODO add your handling code here:
+        int indexSelected = tblMoto.getSelectedRow();
+        if (indexSelected == -1) {
+            return;
+        }
+        Motocycle moto = motoModel.getData().get(indexSelected);
+        showMoto(moto);
+    }//GEN-LAST:event_tblMotoMouseClicked
+
+    private void btnBrandDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBrandDeleteActionPerformed
+        // TODO add your handling code here:
+        int indexSelected = tblBrand.getSelectedRow();
+        if (indexSelected < 0) {
+            JOptionPane.showMessageDialog(this, "Function invalid");
+            return ;
+        }
+        try{
+            // check number motocycle existed with brand ID
+            MotocycleDAO motoDAO = new MotocycleDAO();
+            String brandID = brandModel.getData().get(indexSelected).getBrandID();
+            int contain = motoDAO.numberOfMotoByBrandID(brandID);  // number of moto contain with brandID
+            if (contain == 0) {  // don't have any moto contain by brandID
+                // delete brandID
+                int option = JOptionPane.showConfirmDialog(this, "Are you sure to delete !!!");
+                if (option == JOptionPane.OK_OPTION) {
+                    brandModel.deleteBrand(brandID);
+                    tblBrand.updateUI();
+                }
+            }else{
+                JOptionPane.showMessageDialog(this, "The system existed " + contain + "motocycle \n Cannot delete !!!");
+            }
+        }catch(Exception ex){
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Delete is error");
+        }
+    }//GEN-LAST:event_btnBrandDeleteActionPerformed
+
+    private void btnMotoAddNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMotoAddNewActionPerformed
+        // TODO add your handling code here:
+        setMotoDefault();
+    }//GEN-LAST:event_btnMotoAddNewActionPerformed
+
+    private void btnMotoSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMotoSaveActionPerformed
+        // TODO add your handling code here:
+        if (!validMoto()) {
+            return ;
+        }
+        try{
+            String motoID = txtMotoID.getText().trim();
+            String model = txtMotoModel.getText().trim();
+            int year = calMotoYear.getYear();
+            String condition = txtMotoCondition.getText().trim();
+            float price = Float.parseFloat(txtMotoPrice.getText().trim());
+            int quantity = Integer.parseInt(txtMotoQuantity.getText().trim());
+            String warranty = txtMotoWarranty.getText().trim();
+            Brand brand = (Brand)boxBrand.getSelectedItem();
+            Motocycle moto = new Motocycle(motoID, model, condition, warranty, year, price, quantity, brand);
+            if (motoAddNew == true) { // insert new moto
+                motoModel.createMoto(moto);
+            }else{   // update moto
+                motoModel.updateMoto(moto);
+            }
+            tblMoto.updateUI();
+            setMotoDefault();
+        }catch(Exception ex){
+            ex.printStackTrace();
+        }
+    }//GEN-LAST:event_btnMotoSaveActionPerformed
+
+    private void btnMotoDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMotoDeleteActionPerformed
+        // TODO add your handling code here:
+        int indexSelected = tblMoto.getSelectedRow();
+        if (indexSelected < 0) {
+            JOptionPane.showMessageDialog(this, "Function invalid");
+            return;
+        }
+        try{
+            int option = JOptionPane.showConfirmDialog(this, "Are you sure to delete !!!");
+            if (option == JOptionPane.OK_OPTION) {
+                String motoID = motoModel.getData().get(indexSelected).getMotocycleID();
+                motoModel.deleteMoto(motoID);
+                tblMoto.updateUI();
+                setMotoDefault();
+            }
+        }catch(Exception ex){
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Error");
+        }
+    }//GEN-LAST:event_btnMotoDeleteActionPerformed
+
+    private void btnBrandAddNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBrandAddNewActionPerformed
+        // TODO add your handling code here:
+        setBrandDefault();
+    }//GEN-LAST:event_btnBrandAddNewActionPerformed
 
     /**
      * @param args the command line arguments
@@ -398,26 +581,31 @@ public class Management extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Management.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Management_Motocycle.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Management.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Management_Motocycle.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Management.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Management_Motocycle.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Management.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Management_Motocycle.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Management().setVisible(true);
+                try {
+                    new Management_Motocycle().setVisible(true);
+                } catch (SQLException ex) {
+                    Logger.getLogger(Management_Motocycle.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         });
     }
@@ -452,8 +640,8 @@ public class Management extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTable tblBrand;
+    private javax.swing.JTable tblMoto;
     private javax.swing.JTextField txtBrandCountry;
     private javax.swing.JTextField txtBrandDesc;
     private javax.swing.JTextField txtBrandID;
@@ -465,4 +653,147 @@ public class Management extends javax.swing.JFrame {
     private javax.swing.JTextField txtMotoQuantity;
     private javax.swing.JTextField txtMotoWarranty;
     // End of variables declaration//GEN-END:variables
+
+    private void setModel() {
+        tblBrand.setModel(brandModel); // set data into tbl brand
+        tblMoto.setModel(motoModel);   // set data into tbl moto
+        boxBrand.setModel(new DefaultComboBoxModel(brandModel.getData()));  // set value for combobox
+    }
+
+    private void setBrandDefault() {
+        brandAddNew = true;   // ready to add new brand
+        txtBrandID.setEditable(true);
+        txtBrandID.setText("");
+        txtBrandID.requestFocus();
+
+        txtBrandName.setText("");
+        txtBrandCountry.setText("");
+        txtBrandDesc.setText("");
+    }
+
+    private void setMotoDefault() {
+        motoAddNew = true; // ready to add new moto
+        txtMotoID.setEditable(true);
+        txtMotoID.setText("");
+        txtMotoID.requestFocus();
+
+        txtMotoModel.setText("");
+        calMotoYear.setYear(2021);
+        txtMotoCondition.setText("");
+        txtMotoPrice.setText("");
+        txtMotoQuantity.setText("");
+        txtMotoWarranty.setText("");
+        boxBrand.setSelectedIndex(0);
+
+    }
+
+    private void showBrand(Brand brand) {
+        brandAddNew = false;   // ready to update brand
+        txtBrandID.setEditable(false);
+        txtBrandID.setText(brand.getBrandID());
+
+        txtBrandName.setText(brand.getBrandName());
+        txtBrandCountry.setText(brand.getCountry());
+        txtBrandDesc.setText(brand.getDescription());
+    }
+
+    private void showMoto(Motocycle moto) {
+        motoAddNew = false; // ready to update moto
+        txtMotoID.setEditable(false);
+        txtMotoID.setText(moto.getMotocycleID());
+
+        txtMotoModel.setText(moto.getModel());
+
+        calMotoYear.setYear(moto.getYear());
+
+        txtMotoCondition.setText(moto.getCondition());
+        txtMotoPrice.setText(moto.getPrice() + "");
+        txtMotoQuantity.setText(moto.getQuantity() + "");
+        txtMotoWarranty.setText(moto.getWarranty());
+        boxBrand.setSelectedItem(moto.getBrandID());
+
+    }
+
+    private boolean validBrand() {
+        if (brandAddNew == true) {
+            String brandID = txtBrandID.getText().trim();
+            if (!brandID.matches("[a-zA-Z0-9]{2,10}")) {
+                JOptionPane.showMessageDialog(this, "Brand ID from 2-10 characters \nNone special chatacters");
+                return false;
+            }
+        }
+        String brandName = txtBrandName.getText().trim();
+        if (brandName.length() < 2 || brandName.length() >= 50) {
+            JOptionPane.showMessageDialog(this, "Brand name from 2-50 characters");
+            return false;
+        }
+        String country = txtBrandCountry.getText().trim();
+        if (country.length() < 2 || country.length() >= 50) {
+            JOptionPane.showMessageDialog(this, "Brand country from 2-50 characters");
+            return false;
+        }
+        String desc = txtBrandDesc.getText().trim();
+        if (desc.length() < 2 || desc.length() >= 200) {
+            JOptionPane.showMessageDialog(this, "Brand description from 2-200 characters");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validMoto() {
+        if (motoAddNew == true) {
+            String motoID = txtMotoID.getText().trim();
+            if (!motoID.matches("[a-zA-Z0-9]{2,10}")) {
+                JOptionPane.showMessageDialog(this, "Motocycle ID from 2-10 characters \nNone special chatacters");
+                return false;
+            }
+        }
+        String model = txtMotoModel.getText().trim();
+        if (model.length() < 2 || model.length() >= 50) {
+            JOptionPane.showMessageDialog(this, "Model name from 2-50 characters");
+            return false;
+        }
+        String condition = txtMotoCondition.getText().trim();
+        if (condition.length() < 2 || condition.length() >= 50) {
+            JOptionPane.showMessageDialog(this, "Condition from 2-50 characters");
+            return false;
+        }
+        int year = calMotoYear.getYear();
+        if ((LocalDate.now().getYear() - year) < 0) {
+            JOptionPane.showMessageDialog(this, "Year invalid");
+            return false;
+        }
+        try {   // check price
+            float price = Float.parseFloat(txtMotoPrice.getText().trim());
+            if (price <= 0) {
+                JOptionPane.showMessageDialog(this, "Price required is postitive number");
+                return false;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Price required is positive number");
+            return false;
+        }
+
+        try {   // check quantity
+            int quantity = Integer.parseInt(txtMotoQuantity.getText().trim());
+            if (quantity <= 0) {
+                JOptionPane.showMessageDialog(this, "Quantity required is integer postitive number");
+                return false;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Quantity required is integer positive number");
+            return false;
+        }
+
+        String warranty = txtMotoWarranty.getText().trim();
+        if (warranty.length() < 2 || warranty.length() >= 50) {
+            JOptionPane.showMessageDialog(this, "Warranty from 2-50 characters");
+            return false;
+        }
+
+        return true;
+    }
+    
 }

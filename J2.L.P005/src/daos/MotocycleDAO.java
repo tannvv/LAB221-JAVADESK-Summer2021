@@ -12,7 +12,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Vector;
 import java.util.Date;
 import utils.DBUils;
 
@@ -37,18 +37,22 @@ public class MotocycleDAO {
         }
     }
 
-    public ArrayList<Motocycle> getAllMoto() throws SQLException {
-        ArrayList<Motocycle> list = null;
+    public Vector<Motocycle> getAllMoto() throws SQLException {
+        Vector<Motocycle> list = null;
         String sql = "SELECT motocycleID,model,year,condition,price,quantity,warranty,brandID FROM TblMotocycle";
         try {
             conn = DBUils.getConnect();
             ptsm = conn.prepareStatement(sql);
             rs = ptsm.executeQuery();
-            list = new ArrayList<>();
+            list = new Vector<>();
             while (rs.next()) {
                 String id = rs.getString("motocycleID");
                 String model = rs.getString("model");
-                Date year = rs.getDate("year");
+                
+                Date yearDB = rs.getDate("year");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
+                int year = Integer.parseInt(dateFormat.format(yearDB));
+                
                 String condition = rs.getString("condition");
                 float price = rs.getFloat("price");
                 int quantity = rs.getInt("quantity");
@@ -95,10 +99,8 @@ public class MotocycleDAO {
             ptsm = conn.prepareStatement(sql);
             ptsm.setString(1, moto.getMotocycleID());
             ptsm.setString(2, moto.getModel());
-            
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
-            String year = dateFormat.format(moto.getYear());
-            ptsm.setString(3, year);
+          
+            ptsm.setString(3, moto.getYear() + "");
             
             ptsm.setString(4, moto.getCondition());
             ptsm.setFloat(5, moto.getPrice());
@@ -128,9 +130,7 @@ public class MotocycleDAO {
        
             ptsm.setString(1, moto.getModel());
             
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
-            String year = dateFormat.format(moto.getYear());
-            ptsm.setString(2, year);
+            ptsm.setString(2, moto.getYear() + "");
             
             ptsm.setString(3, moto.getCondition());
             ptsm.setFloat(4, moto.getPrice());

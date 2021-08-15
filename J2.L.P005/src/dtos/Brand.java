@@ -5,7 +5,6 @@
  */
 package dtos;
 
-import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -83,6 +82,11 @@ public class Brand {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return brandID + "-" + brandName;
     }
     
 }

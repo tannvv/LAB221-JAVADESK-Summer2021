@@ -10,7 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Vector;
 import utils.DBUils;
 
 /**
@@ -35,14 +35,14 @@ public class BrandDAO {
         }
     }
 
-    public ArrayList<Brand> getAllBrand() throws SQLException {
-        ArrayList<Brand> list = null;
+    public Vector<Brand> getAllBrand() throws SQLException {
+        Vector<Brand> list = null;
         String sql = "SELECT brandID,brandName,country,description FROM TblBrand";
         try {
             conn = DBUils.getConnect();
             ptsm = conn.prepareStatement(sql);
             rs = ptsm.executeQuery();
-            list = new ArrayList<>();
+            list = new Vector<>();
             while (rs.next()) {
                 String brandID = rs.getString("brandID");
                 String brandName = rs.getString("brandName");

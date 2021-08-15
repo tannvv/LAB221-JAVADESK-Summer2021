@@ -5,7 +5,6 @@
  */
 package dtos;
 
-import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -14,7 +13,7 @@ import java.util.Objects;
  */
 public class Motocycle {
     private String motocycleID, model, condition, warranty;
-    private Date year;
+    private int year;
     private float price;
     private int quantity;
     private Brand brandID;
@@ -26,7 +25,7 @@ public class Motocycle {
         this.motocycleID = motocycleID;
     }
 
-    public Motocycle(String motocycleID, String model, String condition, String warranty, Date year, float price, int quantity, Brand brandID) {
+    public Motocycle(String motocycleID, String model, String condition, String warranty, int year, float price, int quantity, Brand brandID) {
         this.motocycleID = motocycleID;
         this.model = model;
         this.condition = condition;
@@ -69,11 +68,11 @@ public class Motocycle {
         this.warranty = warranty;
     }
 
-    public Date getYear() {
+    public int getYear() {
         return year;
     }
 
-    public void setYear(Date year) {
+    public void setYear(int year) {
         this.year = year;
     }
 

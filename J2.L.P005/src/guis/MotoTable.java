@@ -8,8 +8,7 @@ package guis;
 import daos.MotocycleDAO;
 import dtos.Motocycle;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Vector;
 import javax.swing.table.AbstractTableModel;
 
 /**
@@ -17,7 +16,7 @@ import javax.swing.table.AbstractTableModel;
  * @author TanNV
  */
 public class MotoTable extends AbstractTableModel{
-    private ArrayList<Motocycle> data = null;
+    private Vector<Motocycle> data = null;
     private String[] headeres = {"ID", "Model","Year", "Condition","Price", "Quantity", "Warranty","Brand ID" };
 
     public MotoTable() throws SQLException {
@@ -26,11 +25,11 @@ public class MotoTable extends AbstractTableModel{
     
     
 
-    public ArrayList<Motocycle> getData() {
+    public Vector<Motocycle> getData() {
         return data;
     }
 
-    public void setData(ArrayList<Motocycle> data) {
+    public void setData(Vector<Motocycle> data) {
         this.data = data;
     }
 
@@ -59,10 +58,7 @@ public class MotoTable extends AbstractTableModel{
             case 0 : return moto.getMotocycleID();
             case 1 : return moto.getModel();
             
-            case 2 : 
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy");
-                String year = dateFormat.format(moto.getYear());
-                return year;
+            case 2 : return moto.getYear();
                 
             case 3 : return moto.getCondition();
             case 4 : return moto.getPrice();
@@ -72,6 +68,13 @@ public class MotoTable extends AbstractTableModel{
         }
         return null;
     }
+
+    @Override
+    public String getColumnName(int i) {
+        return headeres[i]; //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
     
     public void createMoto(Motocycle moto) throws SQLException{
         MotocycleDAO dao = new MotocycleDAO();
