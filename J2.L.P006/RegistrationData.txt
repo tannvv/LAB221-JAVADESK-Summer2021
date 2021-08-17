@@ -1,0 +1,7 @@
+GL1,Tuan,20,false,tse140819@fpt,0394705508,Gia Lai,5,No
+VL1,Loi,15,true,khaihqse140099@fpt,0395113113,Vinh long,9,No
+DN1,dat,21,true,datltse140919@fpt,0352633009,nha trang,5,No
+DN3,thang,21,false,chinhpvse140918@fpt,0123456789,Phu yen,5,No
+DN2,Nam,15,false,namd@fpt,0123491234,viet nam,7,No
+DT01,Tan,15,true,tan@gmail,4513548,phu yen,2,none
+Tan,Tan,15,true,tan@gmail,132465,none,3,noe
